@@ -7,7 +7,13 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
-
+/*
+private static final String arrMenu[] - постралась реализовать "умный" массив, чтобы
+сделать код для читаемости удобнее
+строка private static final String LineMinuses = "------------------------------------------------"; и также
+private static final String LineEquals = "================================================"; помогают улучшить визуал
+читаемости кода)
+ */
 
 public class ToDoListApp {
     private static final String arrMenu[] = new String[]{"\nГЛАВНОЕ МЕНЮ", "1. Просмотреть все задачи", "2. Создать задачу",
@@ -53,7 +59,9 @@ public class ToDoListApp {
             System.out.println(str);
         }
     }
-
+    /*
+     здесь реализована защита от некорректног ввода пользователем чисел
+     */
     private static int readIntInput(String prompt) {
         while (true) {
             try {
@@ -112,7 +120,11 @@ public class ToDoListApp {
             System.out.println("Ошибка: Ведь начальная дата не может быть позже конечной.");
             return;
         }
-
+        /*
+         выполянем поиск задач в указанном диапазоне дат
+         отбираем задачи, дедлайн которых попадает между начальной и конечной датой
+         затем сортируем найденные задачи по дате дедлайна
+         */
         List<Task> results = tasks.stream()
                 .filter(t -> (t.getDeadline().isEqual(startDate) || t.getDeadline().isAfter(startDate))
                         && (t.getDeadline().isEqual(endDate) || t.getDeadline().isBefore(endDate)))
@@ -156,7 +168,7 @@ public class ToDoListApp {
             System.out.println("Список задач пуст.");
             return;
         }
-
+        // подсчет задач по статусам и приоритетам
         int totalTasks = tasks.size();
         int completed = (int) tasks.stream().filter(t -> t.getStatus() == Status.DONE).count();
         int inProgress = (int) tasks.stream().filter(t -> t.getStatus() == Status.IN_PROGRESS).count();
@@ -165,6 +177,7 @@ public class ToDoListApp {
         int mediumPriority = (int) tasks.stream().filter(t -> t.getPriority() == Priority.MEDIUM).count();
         int lowPriority = (int) tasks.stream().filter(t -> t.getPriority() == Priority.LOW).count();
 
+        // здесь подсчет задач, у которых дедлайн прошел, но задача не выполнена
         int overdue = (int) tasks.stream()
                 .filter(t -> t.getDeadline().isBefore(LocalDateTime.now()) && t.getStatus() != Status.DONE)
                 .count();
@@ -204,6 +217,7 @@ public class ToDoListApp {
                     int weight1 = getPriorityWeight(task1.getPriority());
                     int weight2 = getPriorityWeight(task2.getPriority());
                     return Integer.compare(weight2, weight1);
+                    // строка выше означает, что сначала высокий приоритет (3 > 2 > 1)
                 });
                 break;
             case 2:
@@ -221,6 +235,7 @@ public class ToDoListApp {
         System.out.println("Задачи отсортированы по приоритету.");
         viewAllTasks();
     }
+    // тут функция преобразует наш enum в числовые значения для сравнения
     private static int getPriorityWeight(Priority priority) {
         return switch (priority) {
             case HIGH -> 3;
@@ -243,7 +258,7 @@ public class ToDoListApp {
         tasks.add(newTask);
         System.out.println("Задача успешно создана!");
     }
-
+    // преобразование введенной строки в дату с проверкой корректности
     private static LocalDateTime readDateTimeInput() {
         while (true) {
             try {
@@ -359,6 +374,7 @@ public class ToDoListApp {
         Comparator<Task> comparator = switch (choice) {
             case 1 -> Comparator.comparing(Task::getCreatedAt);
             case 2 -> Comparator.comparing(Task::getCreatedAt).reversed();
+            // сортировка по срочности: чем ближе дедлайн к текущему времени, тем выше приоритет
             case 3 -> Comparator.comparing(task ->
                     Math.abs(java.time.Duration.between(LocalDateTime.now(), task.getDeadline()).getSeconds())
             );
@@ -448,6 +464,7 @@ public class ToDoListApp {
             System.out.println("Неверный выбор.");
         }
     }
+    // поиск задачи по ID перебором всех элементов
     private static Task findTaskById(int id) {
         for (Task task : tasks) {
             if (task.getId() == id) {
