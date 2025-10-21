@@ -8,7 +8,13 @@ import java.util.List;
 import java.util.Scanner;
 
 
+
 public class ToDoListApp {
+    private static final String arrMenu[] = new String[]{"\nГЛАВНОЕ МЕНЮ", "1. Просмотреть все задачи", "2. Создать задачу",
+            "3. Редактировать задачу", "4. Удалить задачу", "5. Изменить приоритет задачи", "6. Отсортировать задачи по дате",
+            "7. Найти задачи", "8. Статистика задач", "9. Сортировка по приоритету", "10. Поиск по диапазону дат", "0. Выход"};
+    private static final String LineMinuses = "------------------------------------------------";
+    private static final String LineEquals = "================================================";
     private static final List<Task> tasks = new ArrayList<>();
     private static int nextId = 1;
     private static final Scanner scanner = new Scanner(System.in);
@@ -43,18 +49,9 @@ public class ToDoListApp {
     }
 
     private static void printMenu() {
-        System.out.println("\nГЛАВНОЕ МЕНЮ");
-        System.out.println("1. Просмотреть все задачи");
-        System.out.println("2. Создать задачу");
-        System.out.println("3. Редактировать задачу");
-        System.out.println("4. Удалить задачу");
-        System.out.println("5. Изменить приоритет задачи");
-        System.out.println("6. Отсортировать задачи по дате");
-        System.out.println("7. Найти задачи");
-        System.out.println("8. Статистика задач");
-        System.out.println("9. Сортировка по приоритету");
-        System.out.println("10. Поиск по диапазону дат");
-        System.out.println("0. Выход");
+        for (String str : arrMenu) {
+            System.out.println(str);
+        }
     }
 
     private static int readIntInput(String prompt) {
@@ -72,15 +69,15 @@ public class ToDoListApp {
         if (tasks.isEmpty()) {
             System.out.println("К сожалению, список задач пуст.");
         } else {
-            System.out.println("\n================================================");
+            System.out.println("\n" + LineEquals );
             System.out.println("              СПИСОК ВСЕХ ЗАДАЧ");
-            System.out.println("================================================");
+            System.out.println(LineEquals);
 
             for (int i = 0; i < tasks.size(); i++) {
                 Task task = tasks.get(i);
 
                 System.out.println("ЗАДАЧА #" + task.getId());
-                System.out.println("------------------------------------------------");
+                System.out.println(LineMinuses);
                 System.out.println("Заголовок:  " + task.getTitle());
                 System.out.println("Описание:   " + task.getDescription());
                 System.out.println("Дедлайн:    " + task.getDeadline().format(DISPLAY_DATE_FORMATTER));
@@ -89,13 +86,13 @@ public class ToDoListApp {
                 System.out.println("Создана:    " + task.getCreatedAt().format(DISPLAY_DATE_FORMATTER));
 
                 if (i < tasks.size() - 1) {
-                    System.out.println("\n------------------------------------------------");
+                    System.out.println("\n" + LineMinuses);
                 }
             }
 
-            System.out.println("================================================");
+            System.out.println(LineEquals);
             System.out.println("Всего задач: " + tasks.size());
-            System.out.println("================================================\n");
+            System.out.println(LineEquals + "\n");
         }
     }
 
@@ -125,17 +122,17 @@ public class ToDoListApp {
         if (results.isEmpty()) {
             System.out.println("Задачи в указанном диапазоне не найдены");
         } else {
-            System.out.println("\n================================================");
+            System.out.println("\n" + LineEquals);
             System.out.println("           РЕЗУЛЬТАТЫ ПОИСКА");
             System.out.println("  с " + startDate.format(DISPLAY_DATE_FORMATTER) +
                     " по " + endDate.format(DISPLAY_DATE_FORMATTER));
-            System.out.println("================================================");
+            System.out.println(LineEquals);
 
             for (int i = 0; i < results.size(); i++) {
                 Task task = results.get(i);
 
                 System.out.println("ЗАДАЧА #" + task.getId());
-                System.out.println("------------------------------------------------");
+                System.out.println(LineMinuses);
                 System.out.println("Заголовок:  " + task.getTitle());
                 System.out.println("Описание:   " + task.getDescription());
                 System.out.println("Дедлайн:    " + task.getDeadline().format(DISPLAY_DATE_FORMATTER));
@@ -144,13 +141,13 @@ public class ToDoListApp {
                 System.out.println("Создана:    " + task.getCreatedAt().format(DISPLAY_DATE_FORMATTER));
 
                 if (i < results.size() - 1) {
-                    System.out.println("\n------------------------------------------------");
+                    System.out.println("\n" + LineMinuses);
                 }
             }
 
-            System.out.println("================================================");
+            System.out.println(LineEquals);
             System.out.println("Найдено задач: " + results.size());
-            System.out.println("================================================\n");
+            System.out.println(LineEquals + "\n");
         }
     }
 
@@ -160,21 +157,21 @@ public class ToDoListApp {
             return;
         }
 
-        long totalTasks = tasks.size();
-        long completed = tasks.stream().filter(t -> t.getStatus() == Status.DONE).count();
-        long inProgress = tasks.stream().filter(t -> t.getStatus() == Status.IN_PROGRESS).count();
-        long todo = tasks.stream().filter(t -> t.getStatus() == Status.TO_DO).count();
-        long highPriority = tasks.stream().filter(t -> t.getPriority() == Priority.HIGH).count();
-        long mediumPriority = tasks.stream().filter(t -> t.getPriority() == Priority.MEDIUM).count();
-        long lowPriority = tasks.stream().filter(t -> t.getPriority() == Priority.LOW).count();
+        int totalTasks = tasks.size();
+        int completed = (int) tasks.stream().filter(t -> t.getStatus() == Status.DONE).count();
+        int inProgress = (int) tasks.stream().filter(t -> t.getStatus() == Status.IN_PROGRESS).count();
+        int todo = (int) tasks.stream().filter(t -> t.getStatus() == Status.TO_DO).count();
+        int highPriority = (int) tasks.stream().filter(t -> t.getPriority() == Priority.HIGH).count();
+        int mediumPriority = (int) tasks.stream().filter(t -> t.getPriority() == Priority.MEDIUM).count();
+        int lowPriority = (int) tasks.stream().filter(t -> t.getPriority() == Priority.LOW).count();
 
-        long overdue = tasks.stream()
+        int overdue = (int) tasks.stream()
                 .filter(t -> t.getDeadline().isBefore(LocalDateTime.now()) && t.getStatus() != Status.DONE)
                 .count();
 
-        System.out.println("\n================================================");
+        System.out.println("\n" + LineEquals);
         System.out.println("              СТАТИСТИКА ЗАДАЧ");
-        System.out.println("================================================");
+        System.out.println(LineEquals);
         System.out.println("Всего задач: " + totalTasks);
         System.out.println("Выполнено: " + completed);
         System.out.println("В работе: " + inProgress);
@@ -186,7 +183,7 @@ public class ToDoListApp {
 
         double completionRate = (double) completed / totalTasks * 100;
         System.out.printf("Процент выполнения: %.1f%%\n", completionRate);
-        System.out.println("================================================\n");
+        System.out.println(LineEquals + "\n");
     }
 
 
@@ -410,15 +407,15 @@ public class ToDoListApp {
         if (results.isEmpty()) {
             System.out.println("Задачи не найдены.");
         } else {
-            System.out.println("\n================================================");
+            System.out.println("\n" + LineEquals);
             System.out.println("           РЕЗУЛЬТАТЫ ПОИСКА");
-            System.out.println("================================================");
+            System.out.println(LineEquals);
 
             for (int i = 0; i < results.size(); i++) {
                 Task task = results.get(i);
 
                 System.out.println("ЗАДАЧА #" + task.getId());
-                System.out.println("------------------------------------------------");
+                System.out.println(LineMinuses);
                 System.out.println("Заголовок:  " + task.getTitle());
                 System.out.println("Описание:   " + task.getDescription());
                 System.out.println("Дедлайн:    " + task.getDeadline().format(DISPLAY_DATE_FORMATTER));
@@ -427,13 +424,13 @@ public class ToDoListApp {
                 System.out.println("Создана:    " + task.getCreatedAt().format(DISPLAY_DATE_FORMATTER));
 
                 if (i < results.size() - 1) {
-                    System.out.println("\n------------------------------------------------");
+                    System.out.println("\n" + LineMinuses);
                 }
             }
 
-            System.out.println("================================================");
+            System.out.println(LineEquals);
             System.out.println("Найдено задач: " + results.size());
-            System.out.println("================================================\n");
+            System.out.println(LineEquals + "\n");
         }
     }
 
